@@ -1,0 +1,38 @@
+name: Daily Automated GitHub Activity (50 Commits)
+
+on:
+  schedule:
+    # Runs everyday at 18:00 UTC (11:30 PM IST) completely in the cloud
+    - cron: '0 18 * * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Auto Activity Script (50 Commits)
+        env:
+          GIT_USER_NAME: "Aditya"
+          GIT_USER_EMAIL: "adityajaspal04@gmail.com"
+          COMMITS_COUNT: "50"
+          SKIP_WEEKENDS: "false"
+        run: |
+          python auto_activity.py
+
+      - name: Push Commits to GitHub
+        run: |
+          git push origin main
